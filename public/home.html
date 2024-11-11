@@ -87,7 +87,7 @@
                 password
             };
 
-            fetch('/api/login', {
+            fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -96,13 +96,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    window.location.href = '/home';
+                console.log(data)
+                if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        window.location.href = '/home';
                 } else {
                     alert('Login failed: ' + data.message);
                 }
             })
-            .catch(error => console.error('Error logging in:', error));
+            .catch(error => {
+                console.error('Error logging in:', error);
+                alert('Error logging in: ' + error.message);
+            });
         }
 
         function registerUser(event) {
@@ -112,9 +117,9 @@
             const userName = document.getElementById('registerUserName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            const repassword = document.getElementById('registerConfirmPassword').value;
 
-            if (password !== confirmPassword) {
+            if (password !== repassword) {
                 alert('Passwords do not match');
                 return;
             }
@@ -124,10 +129,11 @@
                 lastName,
                 userName,
                 email,
-                password
+                password,
+                repassword
             };
 
-            fetch('/api/register', {
+            fetch('/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -136,7 +142,9 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                if (data.token) {
+                    // Almacenar el token en localStorage
+                    localStorage.setItem('token', data.token);
                     alert('Registration successful');
                     toggleForms();
                 } else {

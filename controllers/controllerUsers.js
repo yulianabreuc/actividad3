@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
-
+const { generateToken } = require('../middlewares/auth');
 class UserController {
     async createUser(req, res) {
         try {
@@ -17,10 +17,35 @@ class UserController {
                 permission: 'normal'
             });
             const newUser = await user.save();
-            res.status(201).json(newUser);
+            const token = generateToken(newUser);
+            res.status(201).send({ datauser: newUser, token: token });
+            //res.status(201).json(newUser);
             console.log("guardado Exitosamente")
         } catch (error) {
             res.status(400).json({ message: 'Error al crear el usuario', error: error.message });
+        }
+    }
+
+    async loginUser(req, res) {
+        const { email, password } = req.body;
+        try {
+    
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(500).json({ message: 'Usuario no encontrado' });
+            }
+    
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+            if (!isPasswordValid) {
+                return res.status(500).json({ message: 'Contraseña incorrecta' });
+            }
+    
+            const token = generateToken(user);
+            res.status(200).send({ token });
+        } catch (error) {
+            console.error('Error logging in:', error);
+            res.status(500).json({ message: 'Error al iniciar sesión', error: error.message });
         }
     }
 

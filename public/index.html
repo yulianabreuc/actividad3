@@ -156,6 +156,17 @@
         }
     </style>
     <script>
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+        console.log(getToken())
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = getToken();
+            alert("token no ingresado debe iniciar sesion, no tiene permisos para permanecer en esta pantalla")
+            if (!token) {
+                window.location.href = '/';
+            }
+        });
         document.addEventListener('DOMContentLoaded', () => {
             fetchPublicaciones();
             fetchUsers();
