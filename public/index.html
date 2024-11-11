@@ -5,6 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publicbs</title>
     <style>
+          .logout-container {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .logout-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #0056b3;
+        }
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -156,6 +174,13 @@
         }
     </style>
     <script>
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            alert('Sesión cerrada');
+            // Redirigir a la página de inicio de sesión u otra página
+            window.location.href = '/';
+        }
         const token = localStorage.getItem('token');
         console.log(token)
         function getToken() {
@@ -212,7 +237,11 @@
         function viewComments(publicacionId, button) {
             const commentsDiv = document.getElementById(`comments-${publicacionId}`);
             if (commentsDiv.style.display === 'none') {
-                fetch(`/api/publi/comment/${publicacionId}`)
+                fetch(`/api/publi/comment/${publicacionId}`,{
+                    headers: {
+                        'Authorization': `${token}`
+                    }
+                })
                     .then(response => response.json())
                     .then(comments => {
                         commentsDiv.innerHTML = '';
@@ -267,7 +296,8 @@
             fetch('/api/publi', {
                 method: 'POST',
                 headers: {
-                'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`
                 },
                 body: JSON.stringify(publicationData)
             })
@@ -305,7 +335,12 @@
 
 
         function fetchUsers() {
-            fetch('/api/users')
+            fetch('/api/users', {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            }
+            )
             .then(response => response.json())
             .then(users => {
                 const userSelect = document.createElement('select');
@@ -333,7 +368,8 @@
 
         function deletePublicacion(publicacionId) {
             fetch(`/api/publi/${publicacionId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {'Authorization': `${token}`}
             })
             .then(response => response.json())
             .then(data => {
@@ -367,7 +403,9 @@
             fetch(`/api/publi/${publicacionId}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`,
+                    'Role': `${role}`
                 },
                 body: JSON.stringify(publicationData)
             })
@@ -385,6 +423,10 @@
 </head>
 <body>
     <p>Hola! Bienvenido</p>
+    <div class="logout-container">
+        <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
+    </div>
+    
     <nav>
         <ul>
             <li><a href="#" onclick="showCreatePublicationForm()">Crear Publicación</a></li>
