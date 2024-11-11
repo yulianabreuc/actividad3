@@ -156,13 +156,15 @@
         }
     </style>
     <script>
+        const token = localStorage.getItem('token');
+        console.log(token)
         function getToken() {
             return localStorage.getItem('token');
         }
         document.addEventListener('DOMContentLoaded', () => {
             const token = getToken();
-            alert("token no ingresado debe iniciar sesion, no tiene permisos para permanecer en esta pantalla")
             if (!token) {
+                alert("token no ingresado debe iniciar sesion, no tiene permisos para permanecer en esta pantalla")
                 window.location.href = '/';
             }
         });
@@ -173,7 +175,11 @@
         
 
         function fetchPublicaciones() {
-            fetch('/api/publi')
+            fetch('/api/publi', {
+                headers: {
+                    'Authorization': `${token}`
+                }
+            })
             .then(response => response.json())
             .then(data => {
                 const publicacionesList = document.getElementById('publicacionesList');

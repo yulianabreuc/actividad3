@@ -129,7 +129,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             fetchUsers();
+            const token = getToken();
+            if (!token) {
+                alert("token no ingresado debe iniciar sesion, no tiene permisos para permanecer en esta pantalla")
+                window.location.href = '/';
+            }
         });
+
+        function getToken() {
+            return localStorage.getItem('token');
+        }
 
         function fetchUsers() {
             fetch('/api/users')
