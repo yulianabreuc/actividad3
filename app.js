@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
 const { mongoURI } = require('./config/config.js');
+const { verifyToken } = require('./middlewares/auth.js');
+
 
 // Conectar a MongoDB
 mongoose.connect(mongoURI)
@@ -13,16 +15,19 @@ const routesUsers = require('./routes/routesuser.js');
 const routesPublicaciones = require('./routes/routespublicaciones.js');
 const routesAmi = require('./routes/routesamistad.js');
 const routesfeed = require('./routes/routesfeed.js');
+const authRoutes = require('./routes/auth.js');
+
 
 app.set('view engine', 'pug');
 app.set('views', './views'); 
 
 app.use(express.json());
 
-app.use('/api/users', routesUsers);
-app.use('/api/publi', routesPublicaciones);
-app.use('/api/amistad', routesAmi);
-app.use('/api/feed', routesfeed);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', verifyToken, routesUsers);
+app.use('/api/publi', verifyToken, routesPublicaciones);
+app.use('/api/amistad', verifyToken, routesAmi);
+app.use('/api/feed', verifyToken, routesfeed);
 
 const { getUsers, getFeed } = require('./models/models.js');
 const Publicacion = require('./models/modelPublicaciones.js');

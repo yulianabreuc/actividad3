@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const { generateToken } = require('../middleware/auth');
+const { generateToken } = require('../middlewares/auth.js');
 const router = express.Router();
 
 // Registro de usuario
