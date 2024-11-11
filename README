@@ -1,6 +1,6 @@
 # Node Express API
 
-Esta es CRUD en una Base de Datos utilizando Node.js construida con Express.js y MongoDB. Proporciona endpoints para acceder a diferentes vistas y tiene vistas con HTML y CSS para ejecutar los CRUD en 2 entidades.
+Esta es proyecto en continuidad de la version 2.1 que puedes conseguir en este mismo perfil de github, es API con una Base de Datos utilizando Node.js construida con Express.js y MongoDB. Proporciona endpoints para acceder a diferentes vistas con ejs en esta actividad se agregaron autenticacion por JWT, se separaron los accesos a la base de datos con .env y adicionalmente limitaciones por rol para algunas acciones dentro del sistema.
 
 ## Instalación
 
@@ -31,6 +31,8 @@ npm start
 
 Puedes visitar las siguientes vistas a través de las URLs correspondientes:
 
+
+- `/`: Login y Registrar
 - `/home`: Proporciona la vistas se puede realizar un CRUD al modelo Publicaciones
 - `/users`: Proporciona vistas para  realizar un CRUD al modelo USers
 
@@ -67,33 +69,6 @@ La API proporciona los siguientes endpoints:
     - `POST /`: Crea un nueva nueva solicitud de amistad. (`router.post('/', Controller.createSolicitudAmistad)`) debe enviarse el id del user que envia y el id del user al cual se le hace la solicitud de amistad
     - `PUT /:id`: Actualiza la solicitud de amistad. (`router.put('/:id', Controller.updateSolicitudAmistad)`) tambien se usa para aceptar amistad o para negar amistad
     - `Delete /:id`: Elimina la solicitud de amistad. (`router.get('/:id', Controller.deleteSolicitudAmistad)`)
-
-
-
-    desde la api, agregar comentario con:
-    POST
-    http://localhost:3000/api/publi/comment 
-    {
-        "idPublicacion": "671c4092d941d58122303699",
-        "comment": "probando comentario",
-        "user": "671c1ca60c52024715133ad2"
-    }
-
-    Solicitud de amistad:
-    POST
-    http://localhost:3000/api/amistad/
-    {
-        "userSend": "671c699303b768b4779672fe",
-        "userReq": "671c1ca60c52024715133ad2"
-    }
-
-    Aceptar Solucitud de amistad:
-    PUT
-    http://localhost:3000/api/amistad/671c1eb30bed28304bb0a34d
-    debe enviar el id de la solicitud por el path y en el body el estado:
-    {
-        "estado": "aceptado"
-    }
 
     ## Propósito Educativo
 
