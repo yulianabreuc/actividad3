@@ -368,7 +368,17 @@
     </div>
     <p id="welcomeMessage"></p>
     <h2 id="usersTitle">Usuarios</h2>
-    <ul id="usersList"></ul>
+    <ul id="usersList">
+        <% users.forEach(user => { %>
+            <li class="user">
+                <h2><%= user.userName %></h2>
+                <p><%= user.name %> <%= user.lastName %></p>
+                <span class="email">Email: <%= user.email %></span>
+                <button onclick="showEditUserForm(<%= user.id %>)" class="edit-button">Modificar</button>
+                <button onclick="deleteUser(<%= user.id %>)" class="delete-button">Eliminar</button>
+            </li>
+        <% }) %>
+    </ul>
     <p id="noUsers" style="display: none;">No hay usuarios</p>
 </body>
-</html></form>
+</html>
