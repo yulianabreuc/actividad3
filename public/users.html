@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicbs</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            color: #000;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+        span.description {
+            display: block;
+            color: #555;
+            margin-top: 5px;
+        }
+        span.user {
+            display: block;
+            color: #888;
+            margin-top: 5px;
+        }
+        .user {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .user h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .user p {
+            margin: 5px 0;
+        }
+        .user .email {
+            font-size: 0.9em;
+            color: #777;
+        }
+        nav {
+            background-color: #007BFF;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        nav ul {
+            display: flex;
+            justify-content: flex-start;
+            margin: 0;
+            padding: 0;
+        }
+        nav li {
+            list-style: none;
+            cursor: pointer;
+            margin-right: 20px;
+        }
+        nav a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        #createUserForm, #editUserForm {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        #createUserForm input, #editUserForm input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .create-button, .edit-button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .create-button:hover, .edit-button:hover {
+            background-color: #218838;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchUsers();
+        });
+
+        function fetchUsers() {
+            fetch('/api/users')
+            .then(response => response.json())
+            .then(data => {
+                const usersList = document.getElementById('usersList');
+                usersList.innerHTML = '';
+                data.forEach(user => {
+                const userElement = document.createElement('li');
+                userElement.classList.add('user');
+                userElement.innerHTML = `
+                    <h2>${user.userName}</h2>
+                    <p>${user.name} ${user.lastName}</p>
+                    <span class="email">Email: ${user.email}</span>
+                    <button onclick="showEditUserForm(${user.id})" class="edit-button">Modificar</button>
+                    <button onclick="deleteUser(${user.id})" class="delete-button">Eliminar</button>
+                `;
+                usersList.appendChild(userElement);
+                });
+            })
+            .catch(error => console.error('Error fetching users:', error));
+        }
+
+        function showCreateUserForm() {
+            document.getElementById('createUserForm').style.display = 'block';
+            document.getElementById('editUserForm').style.display = 'none';
+        }
+
+        function createUser(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const lastName = document.getElementById('lastName').value;
+            const userName = document.getElementById('userName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            const user = {
+                name,
+                lastName,
+                userName,
+                email,
+                password,
+                repassword: confirmPassword
+            };
+
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('User created:', data);
+                showModal('Se registro exitosamente');
+                document.getElementById('createUserFormss').reset();
+                document.getElementById('createUserForm').style.display = 'none';
+                fetchUsers();
+            })
+            .catch(error => console.error('Error creating user:', error));
+        }
+
+        function showEditUserForm(userId) {
+            fetch(`/api/users/${userId}`)
+            .then(response => response.json())
+            .then(user => {
+                document.getElementById('editUserId').value = user.id;
+                document.getElementById('editName').value = user.name;
+                document.getElementById('editLastName').value = user.lastName;
+                document.getElementById('editUserName').value = user.userName;
+                document.getElementById('editEmail').value = user.email;
+                document.getElementById('createUserForm').style.display = 'none';
+                document.getElementById('editUserForm').style.display = 'block';
+            })
+            .catch(error => console.error('Error fetching user:', error));
+        }
+
+        function editUser(event) {
+            event.preventDefault();
+            const userId = document.getElementById('editUserId').value;
+            const name = document.getElementById('editName').value;
+            const lastName = document.getElementById('editLastName').value;
+            const userName = document.getElementById('editUserName').value;
+            const email = document.getElementById('editEmail').value;
+
+            const user = {
+                name,
+                lastName,
+                userName,
+                email
+            };
+
+            fetch(`/api/users/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('User updated:', data);
+                showModal('Usuario modificado exitosamente');
+                document.getElementById('editUserIdss').reset();
+                document.getElementById('editUserForm').style.display = 'none';
+                fetchUsers();
+            })
+            .catch(error => console.error('Error updating user:', error));
+        }
+
+        function deleteUser(userId) {
+            fetch(`/api/users/${userId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('User deleted:', data);
+                showModal('Usuario eliminado exitosamente');
+                fetchUsers();
+            })
+            .catch(error => console.error('Error deleting user:', error));
+        }
+
+        function showModal(message) {
+            const modal = document.createElement('div');
+            modal.id = 'modal';
+            modal.style.position = 'fixed';
+            modal.style.top = '50%';
+            modal.style.left = '50%';
+            modal.style.transform = 'translate(-50%, -50%)';
+            modal.style.backgroundColor = '#fff';
+            modal.style.padding = '20px';
+            modal.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+            modal.style.zIndex = '1000';
+            modal.innerHTML = `
+                <p>${message}</p>
+                <button onclick="closeModal()">Cerrar</button>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('modal');
+            if (modal) {
+                document.body.removeChild(modal);
+            }
+        }
+    </script>
+</head>
+<body>
+    <p>Hola! Bienvenido</p>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showCreateUserForm()">Crear Usuario</a></li>
+            <li><a href="/home">Publicaciones</a></li>
+        </ul>
+    </nav>
+    <div id="createUserForm">
+        <h2>Crear Usuario</h2>
+        <form onsubmit="createUser(event)" id="createUserFormss">
+            <input type="text" id="name" name="name" placeholder="Nombre" required>
+            <input type="text" id="lastName" name="lastName" placeholder="Apellido" required>
+            <input type="text" id="userName" name="userName" placeholder="Nombre de Usuario" required>
+            <input type="email" id="email" name="email" placeholder="Correo Electrónico" required>
+            <input type="password" id="password" name="password" placeholder="Contraseña" required>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repetir Contraseña" required>
+            <button type="submit" class="create-button">Crear</button>
+        </form>
+    </div>
+    <div id="editUserForm">
+        <h2>Modificar Usuario</h2>
+        <form onsubmit="editUser(event)" id="editUserIdss">
+            <input type="hidden" id="editUserId">
+            <input type="text" id="editName" name="name" placeholder="Nombre" required>
+            <input type="text" id="editLastName" name="lastName" placeholder="Apellido" required>
+            <input type="text" id="editUserName" name="userName" placeholder="Nombre de Usuario" required>
+            <input type="email" id="editEmail" name="email" placeholder="Correo Electrónico" required>
+            <button type="submit" class="edit-button">Modificar</button>
+        </form>
+    </div>
+    <p id="welcomeMessage"></p>
+    <h2 id="usersTitle">Usuarios</h2>
+    <ul id="usersList"></ul>
+    <p id="noUsers" style="display: none;">No hay usuarios</p>
+</body>
+</html></form>
