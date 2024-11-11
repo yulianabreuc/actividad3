@@ -16,6 +16,9 @@ Esta es CRUD en una Base de Datos utilizando Node.js construida con Express.js y
     ```bash
     npm install
     ```
+4. Debe crear el archivo .env  para conectar su data base
+    MONGO_URI=
+    SECRET_KEY= 
 
 ## Ejecutando la API
 

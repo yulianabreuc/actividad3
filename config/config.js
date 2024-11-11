@@ -1,6 +1,8 @@
+require('dotenv').config();
+
 module.exports = {
-    secretKey: 'your-secret-key',
-    mongoURI: 'mongodb+srv://abreucarrilloyv:A5JQLxQKPgR3oENe@yuliana.oxcxg.mongodb.net/actividad2-1?retryWrites=true&w=majority'
+    secretKey: process.env.SECRET_KEY,
+    mongoURI: process.env.MONGO_URI
 };
 
-//mongoURI en este caso esta publica pero deberia pasarse por variables de entorno para no exponerla
+//mongoURI pasa dentro datos de las variables de entorno que deben crearse en el archivo .env
