@@ -19,6 +19,7 @@ Esta es proyecto en continuidad de la version 2.1 que puedes conseguir en este m
 4. Debe crear el archivo .env  para conectar su data base
     MONGO_URI=
     SECRET_KEY= 
+    NAME_DB=
 
 ## Ejecutando la API
 
