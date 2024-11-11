@@ -39,8 +39,7 @@ app.get('/feed', (req, res) => {
     res.render('feed', { welcomeMessage: 'Bienvenido a feed de user', feed: feed });
 });
 app.get('/', (req, res) => {
-    res.send('Por favor, diríjase a la ruta /home');
-});
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));});
 app.use((req, res, next) => {
     res.status(404).send('Ruta no encontrada');
 });

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+        }
+        p {
+            color: #000;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+        .form-container input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .form-container button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .toggle-link {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            color: #007BFF;
+        }
+        .toggle-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        });
+
+        function toggleForms() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+
+        function loginUser(event) {
+            event.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const user = {
+                email,
+                password
+            };
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/home';
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error logging in:', error));
+        }
+
+        function registerUser(event) {
+            event.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const lastName = document.getElementById('registerLastName').value;
+            const userName = document.getElementById('registerUserName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            const user = {
+                name,
+                lastName,
+                userName,
+                email,
+                password
+            };
+
+            fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Registration successful');
+                    toggleForms();
+                } else {
+                    alert('Registration failed: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Error registering user:', error));
+        }
+    </script>
+</head>
+<body>
+    <div class="form-container" id="loginForm">
+        <h2>Login</h2>
+        <form onsubmit="loginUser(event)">
+            <input type="email" id="loginEmail" name="email" placeholder="Correo Electrónico" required>
+            <input type="password" id="loginPassword" name="password" placeholder="Contraseña" required>
+            <button type="submit">Login</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForms()">No tienes una cuenta? Regístrate</span>
+    </div>
+    <div class="form-container" id="registerForm">
+        <h2>Register</h2>
+        <form onsubmit="registerUser(event)">
+            <input type="text" id="registerName" name="name" placeholder="Nombre" required>
+            <input type="text" id="registerLastName" name="lastName" placeholder="Apellido" required>
+            <input type="text" id="registerUserName" name="userName" placeholder="Nombre de Usuario" required>
+            <input type="email" id="registerEmail" name="email" placeholder="Correo Electrónico" required>
+            <input type="password" id="registerPassword" name="password" placeholder="Contraseña" required>
+            <input type="password" id="registerConfirmPassword" name="confirmPassword" placeholder="Repetir Contraseña" required>
+            <button type="submit">Register</button>
+        </form>
+        <span class="toggle-link" onclick="toggleForms()">Ya tienes una cuenta? Inicia sesión</span>
+    </div>
+</body>
+</html>
