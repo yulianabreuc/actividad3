@@ -125,8 +125,34 @@
         .delete-button:hover {
             background-color: #c82333;
         }
+        .logout-container {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .logout-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .logout-button:hover {
+            background-color: #0056b3;
+        }
     </style>
     <script>
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('role');
+            alert('Sesión cerrada');
+            // Redirigir a la página de inicio de sesión u otra página
+            window.location.href = '/';
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             fetchUsers();
             const token = getToken();
@@ -296,6 +322,9 @@
 </head>
 <body>
     <p>Hola! Bienvenido</p>
+    <div class="logout-container">
+        <button class="logout-button" onclick="logout()">Cerrar Sesión</button>
+    </div>
     <nav>
         <ul>
             <li><a href="#" onclick="showCreateUserForm()">Crear Usuario</a></li>

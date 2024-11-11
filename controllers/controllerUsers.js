@@ -42,7 +42,7 @@ class UserController {
             }
     
             const token = generateToken(user);
-            res.status(200).send({ token });
+            res.status(200).send({ token: token, role: user.permission });
         } catch (error) {
             console.error('Error logging in:', error);
             res.status(500).json({ message: 'Error al iniciar sesión', error: error.message });

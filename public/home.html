@@ -99,6 +99,7 @@
                 console.log(data)
                 if (data.token) {
                         localStorage.setItem('token', data.token);
+                        localStorage.setItem('role', data.role);
                         window.location.href = '/home';
                 } else {
                     alert('Login failed: ' + data.message);
