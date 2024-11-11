@@ -192,6 +192,8 @@
       function logout() {
           localStorage.removeItem('token');
           localStorage.removeItem('role');
+          localStorage.removeItem('idUser');
+          
           alert('Sesión cerrada');
           // Redirigir a la página de inicio de sesión u otra página
           window.location.href = '/';
