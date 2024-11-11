@@ -145,6 +145,8 @@
         }
     </style>
     <script>
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('role');
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('role');
@@ -167,7 +169,9 @@
         }
 
         function fetchUsers() {
-            fetch('/api/users')
+            fetch('/api/users', {
+                headers: {'Authorization': `${token}`,'permission': `${role}`}
+            })
             .then(response => response.json())
             .then(data => {
                 const usersList = document.getElementById('usersList');
@@ -234,7 +238,13 @@
         }
 
         function showEditUserForm(userId) {
-            fetch(`/api/users/${userId}`)
+            fetch(`/api/users/${userId}`,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `${token}`,
+                    'permission': `${role}`
+                },
+            })
             .then(response => response.json())
             .then(user => {
                 document.getElementById('editUserId').value = user.id;
@@ -283,12 +293,14 @@
 
         function deleteUser(userId) {
             fetch(`/api/users/${userId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {'Authorization': `${token}`,'permission': `${role}`}
             })
             .then(response => response.json())
             .then(data => {
                 console.log('User deleted:', data);
-                showModal('Usuario eliminado exitosamente');
+                let mensa = data.error || 'Usuario eliminado exitosamente'
+                showModal(mensa);
                 fetchUsers();
             })
             .catch(error => console.error('Error deleting user:', error));

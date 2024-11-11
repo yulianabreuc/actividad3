@@ -24,7 +24,7 @@ app.set('views', './views');
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
-app.use('/api/users', verifyToken, routesUsers);
+app.use('/api/users', routesUsers);
 app.use('/api/publi', routesPublicaciones);
 app.use('/api/amistad', verifyToken, routesAmi);
 app.use('/api/feed', verifyToken, routesfeed);
